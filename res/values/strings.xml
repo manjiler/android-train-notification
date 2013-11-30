@@ -1,0 +1,77 @@
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="app_name">Train Status</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_home_screen">Train Status</string>
+	<string name="live_status">Live Train Status!</string>
+	<string name="setup_notify_screen">Setup Notifications</string>
+	<string name="add_notify_screen">Add Notifications</string>
+	<string name="settings_screen">Settings</string>
+		
+	<!-- All the labels and button text that will be used -->
+    <string name="welcome_text">Welcome to "Train Notification" app</string>
+    <string name="live_status_button">Live Train Status!</string>
+    <string name="setup_notification_button">Setup Notification</string>
+    <string name="station_code_to_name_vice_versa_button">Trains between stations</string>
+    <string name="train_number_text">Train Number : </string>
+    <string name="date_text">Date : </string>
+    <string name="station_code_text">Station Code : </string>
+    <string name="fetch_location_button">Fetch location</string>
+    <string name="fetch_station_list_button">Fetch stations</string>
+    <string name="add_more_station_button">Add more station</string>
+    <string name="status_bar_switch">Enable Status Bar Notification</string>
+    <string name="sms_notify_switch">Enable SMS(s) Notification</string>
+    <string name="email_notify_switch">Enable Email Notification</string>
+    <string name="fetch_train_info">Go</string>
+    <string name="enter_train_number">Enter train number</string>
+    <string name="repetition_label">REPETITION</string>
+    <string name="time_interval">Time Interval (in which the status of train will be checked and notified)</string>
+    <string name="from_time_label">FROM : </string>
+    <string name="to_time_label">TO : </string>
+    <string name="remove_station_description">This buttons removes the stations</string>
+    <string name="station_update_radio_button">Station Updates</string>
+    <string name="location_update_radio_button">Location Updates</string>
+    <string name="frequency">Frequency (minutes): </string>
+    <string name="date">Date: </string>
+    
+    
+    <!-- Menu items -->
+    <string name="add_notify">Add</string>
+    <string name="edit_notify">Edit</string>
+    <string name="delete_notify">Delete</string>
+    
+    
+    <string name="spinner_station_prompt">Choose a station</string>
+    
+    <!-- String variables for the repetitions. -->
+    <!-- A label in a multiple-choice list for the specifying that an event does
+         not repeat -->
+    <string name="does_not_repeat">One-time event</string>
+    <!-- A label in a multiple-choice list for the specifying that an event
+         repeats daily -->
+    <string name="daily">Daily</string>
+    <!-- A label in a multiple-choice list for the specifying that an event
+         repeats every weekday (Monday through Friday) --> 
+    <string name="every_weekday">"Every weekday (Mon\u2013Fri)"</string>
+    <!-- A label in a multiple-choice list for the specifying that an event
+         repeats weekly on some day of the week.  For example,
+         'Weekly (every Tuesday)'. -->
+    <string name="weekly">"Weekly (every <xliff:g id="days_of_week">%s</xliff:g>)"</string>
+    <!-- Example: 'Monthly (every first Sunday)' -->
+    <!--   1st parameter is an ordinal number, like 'first' -->
+    <!--   2nd parameter is a day of the week, like 'Sunday' -->
+    <string name="monthly_on_day_count">"Monthly (every <xliff:g id="ordinal_number">%1$s</xliff:g> <xliff:g id="day_of_week">%2$s</xliff:g>)"</string>
+    <!-- Example: "Monthly (on day 15)" -->
+    <string name="monthly_on_day">"Monthly (on day <xliff:g id="day_of_month">%s</xliff:g>)"</string>
+    
+    <!--  Contextual Menu Items -->
+    <string name="setup_contextual_delete">Delete Notification</string>
+    
+    <!-- Variables need for setup a proper captcha -->
+    <string name="captcha_input_hint">Enter the Captcha</string>
+    <string name="captcha_image_description">Captcha fetch from Indian Rail Enquiry server</string>
+    <string name="captcha_verify_button">Verify Captcha</string>
+    <string name="captcha_valid_text">Congrats!!! captcha validated!!!</string>
+    <string name="captcha_invalid_text">Moron!!! Enter the text properly... There is no refresh</string>
+</resources>
