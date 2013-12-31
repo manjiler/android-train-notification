@@ -34,12 +34,21 @@ public class TrainLocationUpdateService extends IntentService
 	private static final String TRAIN_NAME = "TRAIN_NAME";
 	private static final String TRAIN_NUMBER = "TRAIN_NUMBER";
 	private static final String BOARDING_STATION = "BOARDING_STATION";
+	private static final String FREQUENCY = "FREQUENCY";
 	private static final String START_TSECS = "START_TSECS";
 	private static final String END_TSECS = "END_TSECS";
 	private static final String STATUS_BAR_NOTIFICATION = "STATUS_BAR_NOTIFICATION";	
 	private static final String DATE_FORMAT = "yyyy-MM-dd";
 	private static final String ERROR_MSG = "Unable to connect the railway server. Please retry after sometime!!!";
 	private static final String INVALID_CAPTCHA = "Please verify/re-verify your captcha via Settings menu home screen";
+	
+	private String trainname;
+	private int trainnumber;
+	private String boardingStationName;
+	private long starttsecs;
+	private long endtsecs;
+	private int statusBarNotification;
+	private long frequency;
 	
 	public TrainLocationUpdateService() 
 	{
@@ -49,13 +58,16 @@ public class TrainLocationUpdateService extends IntentService
 	@Override
 	protected void onHandleIntent(Intent intent) 
 	{
-		String trainname = intent.getStringExtra(TRAIN_NAME);
-		int trainnumber = intent.getIntExtra(TRAIN_NUMBER, 0);
-		String boardingStationName = intent.getStringExtra(BOARDING_STATION);
-		long starttsecs = intent.getLongExtra(START_TSECS, 0);
-		long endtsecs = intent.getLongExtra(END_TSECS, 0);
-		int statusBarNotification = intent.getIntExtra(STATUS_BAR_NOTIFICATION, 0);
+		trainname = intent.getStringExtra(TRAIN_NAME);
+		trainnumber = intent.getIntExtra(TRAIN_NUMBER, 0);
+		boardingStationName = intent.getStringExtra(BOARDING_STATION);
+		starttsecs = intent.getLongExtra(START_TSECS, 0);
+		endtsecs = intent.getLongExtra(END_TSECS, 0);
+		statusBarNotification = intent.getIntExtra(STATUS_BAR_NOTIFICATION, 0);
+		frequency = intent.getLongExtra(FREQUENCY, 15 * 60 * 1000);
 		boolean invalidCaptcha = false;
+		
+		long beginTsecsMillis = System.currentTimeMillis();
 		
 		Calendar calendar = Calendar.getInstance();
 		int minutesElasped = calendar.get(Calendar.MINUTE);
@@ -80,42 +92,21 @@ public class TrainLocationUpdateService extends IntentService
 				String title = trainnumber + " - " + trainname;
 				if(invalidCaptcha)
 				{
-					String notificationMsg = INVALID_CAPTCHA;
-					StatusBarNotification.generateNotification(this.getBaseContext(), title, notificationMsg);
+					StatusBarNotification.generateNotification(this.getBaseContext(), title, INVALID_CAPTCHA);
 				}
 				else
 				{
-					String currentLocation = lastStationInfo.getLastLocation() + ". " + "ETA " + 
+					String currentLocation = lastStationInfo.getLastLocation() + ". " + "ETA at " + boardingStationName + " is " + 
 							lastStationInfo.getActualArrival() + ". " +
 							lastStationInfo.getLastUpdatedTime();
 					StatusBarNotification.generateNotification(this.getBaseContext(), title, currentLocation);
 				}
 				
 			}
-
-			
-//			String latestRunningDate = infoCollector.getLatestRunningDate(trainnumber);
-//			String currentLocation = ""; //TrainStatusUtility.convertCurrentLocationToString(lastStationInfo);
-//			if(currentLocation != null)
-//			{
-//				String estimatedTimeOfArrival = infoCollector.getEstimatedTimeOfArrival(Integer.valueOf(trainnumber).toString(), 
-//						latestRunningDate, boardingStationName, 0/*lastStationInfo.getDelayInMinutes()*/);
-//				if(estimatedTimeOfArrival != null)
-//				{
-//					currentLocation += "Expected arrival at " + boardingStationName + " is " + estimatedTimeOfArrival + ".";
-//				}
-//			}
-//			else
-//			{
-//				currentLocation = ERROR_MSG;
-//			}
+			long endTsecsMillis = System.currentTimeMillis();
+			long triggerAtMillis = System.currentTimeMillis() + (frequency - (endTsecsMillis - beginTsecsMillis));
+			setAlarm(triggerAtMillis);
 		}
-		else
-		{
-			//Cancel all further alarms.
-			cancelAlarm();
-		}
-		
 	}	
 	
 	private void cancelAlarm()
@@ -125,6 +116,22 @@ public class TrainLocationUpdateService extends IntentService
 		PendingIntent pendingIntent = PendingIntent.getService(this, 0, locationUpdateServiceIntent, 0);
 		alarmManager.cancel(pendingIntent);
 		Log.i(tag, "Stopping all further alarms for TrainLocationUpdateService");
+	}
+	
+	private void setAlarm(long triggerAtMillis) {
+		AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+		Intent locationUpdateServiceIntent = new Intent(this, TrainLocationUpdateService.class);
+		locationUpdateServiceIntent.putExtra(TRAIN_NAME, trainname);
+		locationUpdateServiceIntent.putExtra(TRAIN_NUMBER, trainnumber);
+		locationUpdateServiceIntent.putExtra(BOARDING_STATION, boardingStationName);
+		locationUpdateServiceIntent.putExtra(START_TSECS, starttsecs);
+		locationUpdateServiceIntent.putExtra(END_TSECS, endtsecs);
+		locationUpdateServiceIntent.putExtra(STATUS_BAR_NOTIFICATION, statusBarNotification);
+		long intervalMillis = frequency * 60 * 1000;
+		locationUpdateServiceIntent.putExtra(FREQUENCY, intervalMillis);
+		PendingIntent pendingIntent = PendingIntent.getService(this, 0, locationUpdateServiceIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+		alarmManager.set(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);							
+		Log.i(tag, "Started an RTC_WAKEUP alarm for TrainLocationUpdateService for " + trainnumber);
 	}
 	
 }
