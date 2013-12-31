@@ -549,7 +549,7 @@ public class AddNotificationActivity extends Activity
 					}
 					
 					//Insert the data
-					TrainDataSource tds = new TrainDataSource(mContext);
+					TrainDataSource tds = TrainDataSource.getInstance(mContext);
 					tds.insert(selectedTrainData);
 					mode.finish();
 					Intent previousScreenIntent = new Intent(getBaseContext(), SetupNotifyActivity.class);
