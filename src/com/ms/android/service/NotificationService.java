@@ -6,6 +6,7 @@ package com.ms.android.service;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.StringTokenizer;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
@@ -16,6 +17,8 @@ import java.util.concurrent.Future;
 import com.ms.android.constants.Constants;
 import com.ms.android.data.TrainDO;
 import com.ms.android.db.TrainDataSource;
+import com.ms.android.trainnotification.R;
+
 
 import android.app.AlarmManager;
 import android.app.IntentService;
@@ -23,6 +26,8 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.os.Build;
 import android.os.IBinder;
 import android.text.format.Time;
 import android.util.Log;
@@ -43,12 +48,19 @@ public class NotificationService extends IntentService
 	private static final String TRAIN_NUMBER = "TRAIN_NUMBER";
 	private static final String BOARDING_STATION = "BOARDING_STATION";
 	private static final String NOTIFICATION_SERVICE = "NOTIFICATION_SERVICE";
+	private static final String FREQUENCY = "FREQUENCY";
 	private static final String START_TSECS = "START_TSECS";
 	private static final String END_TSECS = "END_TSECS";
 	private static final String STATUS_BAR_NOTIFICATION = "STATUS_BAR_NOTIFICATION";	
 	private static final String DATE_FORMAT = "yyyy-MM-dd";
 	private static final String ERROR_MSG = "Unable to connect the railway server. Please retry after sometime!!!";
+	
+	//Repetition strings
+	private static final String WEEKLY_REPETITION = "Weekly (every";
+	
+	
 	private Context context;
+	private Resources resource;
 
 	public NotificationService()
 	{
@@ -61,9 +73,10 @@ public class NotificationService extends IntentService
 		// TODO Get all the data from table and check if any of the start time for a train has crossed 
 		// or not. If it is crossed then start an AlarmManager to take for it.
 		context = getBaseContext();
-		TrainDataSource tds = new TrainDataSource(context);
+		TrainDataSource tds = TrainDataSource.getInstance(context);
 		List<TrainDO> listOfTrains = tds.getAllTrains();
-
+		resource = context.getResources();
+		
 		/*
 		 * For each train
 		 * 1. check it's repetition type. If its a one-time event then check the date, if it's a repeat event
@@ -78,138 +91,169 @@ public class NotificationService extends IntentService
 			System.out.println(train.toString());
 			Calendar currentCalendar = Calendar.getInstance();
 			currentCalendar.setTimeInMillis(System.currentTimeMillis());
-			int currentDayOfWeek = currentCalendar.get(Calendar.DAY_OF_WEEK);
-
+			
 			if(train.getRepitition().contains("Every weekday")) 
 			{
+				int currentDayOfWeek = currentCalendar.get(Calendar.DAY_OF_WEEK);
 				if((currentDayOfWeek >= Calendar.MONDAY) && (currentDayOfWeek <= Calendar.FRIDAY))
 				{
 					Time currentTime = new Time();
 					currentTime.set(System.currentTimeMillis());
 					long currentTsecs = ((currentTime.hour * 3600) + (currentTime.minute * 60)) * 1000;
-					if(currentTsecs >= train.getStartTsecs())
-					{
+					if(currentTsecs >= train.getStartTsecs()) {
 						//Start an repeating ALARM MANAGER.
-						if(train.getUpdateType().equalsIgnoreCase(Constants.STATION_WISE_UPDATE))
-						{
-							AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-							Intent stationUpdateServiceIntent = new Intent(context, TrainStationUpdateService.class);
-							String notificationStations = "";
-							String delim = "";
-							for(int i = 1; i < train.getStationCodes().size(); i++)
-							{
-								notificationStations = delim + train.getStationCodes().get(i);
-								delim = ",";
-							}
-							stationUpdateServiceIntent.putExtra(TRAIN_NAME, train.getTrainName());
-							stationUpdateServiceIntent.putExtra(TRAIN_NUMBER, train.getTrainNumber());
-							stationUpdateServiceIntent.putExtra(BOARDING_STATION, train.getStationCodes().get(0));
-							stationUpdateServiceIntent.putExtra(NOTIFICATION_SERVICE, notificationStations);
-							stationUpdateServiceIntent.putExtra(START_TSECS, train.getStartTsecs());
-							stationUpdateServiceIntent.putExtra(END_TSECS, train.getEndTsecs());
-							stationUpdateServiceIntent.putExtra(STATUS_BAR_NOTIFICATION, train.getStatusBarNofiy());
-							PendingIntent pendingIntent = PendingIntent.getService(context, 0, stationUpdateServiceIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-							long intervalMillis = Integer.parseInt(train.getFrequency()) * 60 * 1000;
-							alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), intervalMillis, pendingIntent);
-							Log.i(tag, "Started a repeated RTC_WAKEUP alarm for TrainStationUpdateService for " + train.getTrainNumber());
+						if(train.getUpdateType().equalsIgnoreCase(Constants.STATION_WISE_UPDATE)) {
+							setStationWiseAlarm(train);
 						} 
-						else if(train.getUpdateType().equalsIgnoreCase(Constants.LOCATION_WISE_UPDATE))
-						{
-							AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-							Intent locationUpdateServiceIntent = new Intent(context, TrainLocationUpdateService.class);
-							locationUpdateServiceIntent.putExtra(TRAIN_NAME, train.getTrainName());
-							locationUpdateServiceIntent.putExtra(TRAIN_NUMBER, train.getTrainNumber());
-							locationUpdateServiceIntent.putExtra(BOARDING_STATION, train.getStationCodes().get(0));
-							locationUpdateServiceIntent.putExtra(START_TSECS, train.getStartTsecs());
-							locationUpdateServiceIntent.putExtra(END_TSECS, train.getEndTsecs());
-							locationUpdateServiceIntent.putExtra(STATUS_BAR_NOTIFICATION, train.getStatusBarNofiy());
-							PendingIntent pendingIntent = PendingIntent.getService(context, 0, locationUpdateServiceIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-							long intervalMillis = Integer.parseInt(train.getFrequency()) * 60 * 1000;
-							alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), intervalMillis, pendingIntent);
-							Log.i(tag, "Started a repeated RTC_WAKEUP alarm for TrainLocationUpdateService for " + train.getTrainNumber());							
+						else if(train.getUpdateType().equalsIgnoreCase(Constants.LOCATION_WISE_UPDATE)) {
+							setLocationWiseAlarm(train);
+							
 						}
 					}
 				}
-			}			
+			}
+			else if(train.getRepitition().contains(resource.getString(R.string.does_not_repeat)))
+			{
+				/*
+				 * Check this current day/date is the date for which the alarm should be generated.
+				 * If so then create an alarm manager based on update type..
+				 */
+				
+				if(Math.abs(currentCalendar.getTimeInMillis() - train.getDateInMilli()) < (86400 * 1000)) {
+					long startTime = train.getDateInMilli() + train.getStartTsecs();
+					if(currentCalendar.getTimeInMillis() > startTime) {
+						//Start an repeating ALARM MANAGER.
+						if(train.getUpdateType().equalsIgnoreCase(Constants.STATION_WISE_UPDATE)) {
+							setStationWiseAlarm(train);
+						} 
+						else if(train.getUpdateType().equalsIgnoreCase(Constants.LOCATION_WISE_UPDATE)) {
+							setLocationWiseAlarm(train);							
+						}
+					}
+				}				
+				
+			}
+			else if(train.getRepitition().contains(WEEKLY_REPETITION))
+			{
+				/*
+				 * check the current day of the week matches with the repetition day.
+				 * If so then create an alram manager based on update type.
+				 */
+				int dayOfWeek = currentCalendar.get(Calendar.DAY_OF_WEEK);
+				int repetitionDayOfWeek = extractWeeklyRepetitionDay(train.getRepitition());
+				if(dayOfWeek == repetitionDayOfWeek) {
+					
+				}
+				
+				
+			}
+			else if(train.getRepitition().contains("Monthly (every"))
+			{
+				/*
+				 * Get the nth day of the month. Check it with the repitition string.
+				 * If they match then create an alram manager based on update type.
+				 */
+				
+			}
+			else if(train.getRepitition().contains("Monthly (on day"))
+			{
+				/*
+				 * Get the day of monthe and check it with the repetition string. 
+				 * If they match then create an alarm manager based on the update type. 
+				 */
+				int dayOfMonth = currentCalendar.get(Calendar.DAY_OF_MONTH);
+				int repetitionDayOfMonth = extractMonthlyRepetitionDay(train.getRepitition());
+			}
 		}
 	}
-
-}
-
-/*public class NotificationService extends Service
-{
-
-	private Context mContext;
-
-	 (non-Javadoc)
- * @see android.app.Service#onBind(android.content.Intent)
-
-	@Override
-	public IBinder onBind(Intent intent) 
-	{
-		// TODO Auto-generated method stub
-		return null;
+	
+	private int extractWeeklyRepetitionDay(String repetition) {
+		int repetitionDay = 0;
+		String repetitionDayString = null;
+		StringTokenizer tokenizer = new StringTokenizer(repetition, " ");
+		if(tokenizer.hasMoreTokens()) {
+			tokenizer.nextToken();
+			tokenizer.nextToken();
+			repetitionDayString = (tokenizer.nextToken().split(")"))[0];			
+		}
+		
+		repetitionDay = convertDayStringToInt(repetitionDayString);
+		return repetitionDay;
 	}
 
-	public void onCreate() 
-	{
-
+	private int extractMonthlyRepetitionDay(String repetition) {
+		int dayOfMonth = 0;
+		String repetitionDay = null;
+		StringTokenizer tokenizer = new StringTokenizer(repetition, " ");
+		if(tokenizer.hasMoreTokens()) {
+			tokenizer.nextToken();
+			tokenizer.nextToken();
+			tokenizer.nextToken();
+			dayOfMonth = Integer.parseInt((tokenizer.nextToken().split(")"))[0]);
+		}
+		
+		return dayOfMonth;
 	}
-
- *//**
- * Best way to get the notification and monitoring to get going is to 
- * start the service through startService() and make it unbound.
- * This service would in turn spawn a thread to check the start times in the
- * database. If any of the train's start time to monitor is crossed then an
- * appropriate AlarmManager will be started.
- *//*
-	@Override
-    public int onStartCommand(Intent intent, int flags, int startId) 
-	{
-		Toast.makeText(this, "Service started", Toast.LENGTH_SHORT).show();
-		mContext = getBaseContext();
-
-		List<Future<String>> list = new ArrayList<Future<String>>();
-		ExecutorService executorService = Executors.newSingleThreadExecutor();
-		Callable<String> monitorThread = new DBMonitoringThread(mContext);
-		Future<String> submit = executorService.submit(monitorThread);
-		list.add(submit);
-
-
-
-		for(Future<String> future : list) 
+	
+	private int convertDayStringToInt(String day) {
+		if(day.equalsIgnoreCase("SUNDAY")) {
+			return 0;
+		} else if(day.equalsIgnoreCase("MONDAY")) {
+			return 1;
+		} else if(day.equalsIgnoreCase("TUESDAY")) {
+			return 2;
+		} else if(day.equalsIgnoreCase("WEDNESDAY")) {
+			return 3;
+		} else if(day.equalsIgnoreCase("THURSDAY")) {
+			return 4;
+		} else if(day.equalsIgnoreCase("FRIDAY")) {
+			return 5;
+		} else if(day.equalsIgnoreCase("SATURDAY")) {
+			return 7;
+		} else {
+			//It should never ever come here. If it does then you are as good as dead!!!!
+			return -1;
+		}
+		
+	}
+	
+	private void setStationWiseAlarm(TrainDO train) {
+		AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+		Intent stationUpdateServiceIntent = new Intent(context, TrainStationUpdateService.class);
+		String notificationStations = "";
+		String delim = "";
+		for(int i = 1; i < train.getStationCodes().size(); i++)
 		{
-			try 
-			{
-				System.out.println("Return value from monitoring thread: " + future.get());
-				//Toast.makeText(this, "Return value form monitoring thread: " + future.get(), 
-				//					Toast.LENGTH_SHORT).show();
-			} 
-			catch(ExecutionException ex) 
-			{
-				Log.e("NotificationService", ex.getMessage());
-			} 
-			catch(CancellationException ex) 
-			{
-				Log.e("NotificationService", ex.getMessage());
-			} 
-			catch(InterruptedException ex) 
-			{
-				Log.e("NotificationService", ex.getMessage());
-			}
-
-		}		
-
-		executorService.shutdown();
-
-		return START_STICKY;
+			notificationStations += delim + train.getStationCodes().get(i);
+			delim = ",";
+		}
+		stationUpdateServiceIntent.putExtra(TRAIN_NAME, train.getTrainName());
+		stationUpdateServiceIntent.putExtra(TRAIN_NUMBER, train.getTrainNumber());
+		stationUpdateServiceIntent.putExtra(BOARDING_STATION, train.getStationCodes().get(0));
+		stationUpdateServiceIntent.putExtra(NOTIFICATION_SERVICE, notificationStations);
+		stationUpdateServiceIntent.putExtra(START_TSECS, train.getStartTsecs());
+		stationUpdateServiceIntent.putExtra(END_TSECS, train.getEndTsecs());
+		stationUpdateServiceIntent.putExtra(STATUS_BAR_NOTIFICATION, train.getStatusBarNofiy());
+		long intervalMillis = Integer.parseInt(train.getFrequency()) * 60 * 1000;
+		stationUpdateServiceIntent.putExtra(FREQUENCY, intervalMillis);
+		PendingIntent pendingIntent = PendingIntent.getService(context, 0, stationUpdateServiceIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+		alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), /*intervalMillis, */pendingIntent);
+		Log.i(tag, "Started an RTC_WAKEUP alarm for TrainStationUpdateService for " + train.getTrainNumber());
 	}
-
-	public void onDestory() 
-	{
-		Toast.makeText(this, "Service destoryed", Toast.LENGTH_SHORT).show();
+	
+	private void setLocationWiseAlarm(TrainDO train) {
+		AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+		Intent locationUpdateServiceIntent = new Intent(context, TrainLocationUpdateService.class);
+		locationUpdateServiceIntent.putExtra(TRAIN_NAME, train.getTrainName());
+		locationUpdateServiceIntent.putExtra(TRAIN_NUMBER, train.getTrainNumber());
+		locationUpdateServiceIntent.putExtra(BOARDING_STATION, train.getStationCodes().get(0));
+		locationUpdateServiceIntent.putExtra(START_TSECS, train.getStartTsecs());
+		locationUpdateServiceIntent.putExtra(END_TSECS, train.getEndTsecs());
+		locationUpdateServiceIntent.putExtra(STATUS_BAR_NOTIFICATION, train.getStatusBarNofiy());
+		long intervalMillis = Integer.parseInt(train.getFrequency()) * 60 * 1000;
+		locationUpdateServiceIntent.putExtra(FREQUENCY, intervalMillis);
+		PendingIntent pendingIntent = PendingIntent.getService(context, 0, locationUpdateServiceIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+		alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), /*intervalMillis, */pendingIntent);							
+		Log.i(tag, "Started an RTC_WAKEUP alarm for TrainLocationUpdateService for " + train.getTrainNumber());
 	}
-
 }
-
-  */
