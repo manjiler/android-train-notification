@@ -45,7 +45,7 @@ public class SetupNotifyActivity extends Activity
         
         mNotificationList = (ListView) findViewById(R.id.notifyList);
         mContext = getBaseContext();
-        TrainDataSource tds = new TrainDataSource(mContext);
+        TrainDataSource tds = TrainDataSource.getInstance(mContext);
         List<TrainDO> listOfTrains = tds.getAllTrains();
         adapter = new CustomeAdapter(this, listOfTrains);
         mNotificationList.setAdapter(adapter);
@@ -73,8 +73,22 @@ public class SetupNotifyActivity extends Activity
                             //@Override
                             public void onDismiss(ListView listView, int[] reverseSortedPositions) {
                                 for (int position : reverseSortedPositions) {
-                                	adapter.data.remove(adapter.getItem(position));
+                                	//adapter.data.remove(adapter.getItem(position));
+                                	
+                                	
+                                	TrainDO train = adapter.data.get(position);
+                                	System.out.println(train.getTrainNumber() + " - " + train.getTrainName());
+                                	TrainDataSource tds = TrainDataSource.getInstance(mContext);
+                                	tds.delete(train);
+                                	
+                                	
+                                	
+                                	adapter.setData(tds.getAllTrains());
+                                	adapter.notifyDataSetChanged();
+                                	//Called the DELETE query!!!!
                                     //adapter.remove(adapter.getItem(position));
+                                	
+                                	
                                 }
                                 adapter.notifyDataSetChanged();
                             }							
@@ -140,7 +154,15 @@ public class SetupNotifyActivity extends Activity
     	private List<TrainDO> data;
     	private LayoutInflater inflater = null;
     	
-    	public CustomeAdapter(Activity activity, List<TrainDO> d) {
+    	public List<TrainDO> getData() {
+			return data;
+		}
+
+		public void setData(List<TrainDO> data) {
+			this.data = data;
+		}
+
+		public CustomeAdapter(Activity activity, List<TrainDO> d) {
     		this.activity = activity;
     		data = d;
     		inflater = (LayoutInflater) this.activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -167,48 +189,60 @@ public class SetupNotifyActivity extends Activity
 				view = inflater.inflate(R.layout.notify_list_row, null);
 			}
 			
-			TextView trainName = (TextView) view.findViewById(R.id.trainNameListRow);
-			TextView stationsTextView = (TextView) view.findViewById(R.id.stationCodesListRow);
-			TextView updateTypeTextView = (TextView) view.findViewById(R.id.UpdateTypeListRow);
-			TextView repetitionTextView = (TextView) view.findViewById(R.id.repetitionListRow);
-			TextView timeIntervalTextView = (TextView) view.findViewById(R.id.timeIntervalListRow);
-			TextView frequencyTextView = (TextView) view.findViewById(R.id.frequencyListRow);
+			/*
+			TrainDataSource tds = TrainDataSource.getInstance(mContext);
+			List<TrainDO> newData = tds.getAllTrains();
 			
-			TrainDO trainData = data.get(position);
-			
-			String strTrainName = (Integer.valueOf(trainData.getTrainNumber())).toString() + " - " +
-										trainData.getTrainName();
-			trainName.setText(strTrainName);
-			
-			String stationsList = "";
-			String comma = "";
-			for(String station : trainData.getStationCodes()) {
-				stationsList += comma + station;
-				comma = ",";
+			if(data.size() != newData.size()) {
+				view = inflater.inflate(R.layout.notify_list_row, null);
+				//data = newData;
 			}
-			
-			stationsTextView.setText(stationsList);
-			
-			updateTypeTextView.setText("Update Type: " + trainData.getUpdateType());
-			repetitionTextView.setText("Repetition: " + trainData.getRepitition());
-			if(trainData.getRepitition().equalsIgnoreCase(getResources().getString(R.string.does_not_repeat))) {
-				int flags = DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR
-		                | DateUtils.FORMAT_SHOW_WEEKDAY | DateUtils.FORMAT_ABBREV_MONTH
-		                | DateUtils.FORMAT_ABBREV_WEEKDAY;
-				String dateString = DateUtils.formatDateTime(SetupNotifyActivity.this, trainData.getDateInMilli(), flags);
-		        repetitionTextView.setText("Repetition: " + trainData.getRepitition() + " - " + dateString);
+			*/
+			if(data.size() > 0) {
+
+				TextView trainName = (TextView) view.findViewById(R.id.trainNameListRow);
+				TextView stationsTextView = (TextView) view.findViewById(R.id.stationCodesListRow);
+				TextView updateTypeTextView = (TextView) view.findViewById(R.id.UpdateTypeListRow);
+				TextView repetitionTextView = (TextView) view.findViewById(R.id.repetitionListRow);
+				TextView timeIntervalTextView = (TextView) view.findViewById(R.id.timeIntervalListRow);
+				TextView frequencyTextView = (TextView) view.findViewById(R.id.frequencyListRow);
+
+
+				TrainDO trainData = data.get(position);
+
+				String strTrainName = (Integer.valueOf(trainData.getTrainNumber())).toString() + " - " +
+						trainData.getTrainName();
+				trainName.setText(strTrainName);
+
+				String stationsList = "";
+				String comma = "";
+				for(String station : trainData.getStationCodes()) {
+					stationsList += comma + station;
+					comma = ",";
+				}
+
+				stationsTextView.setText(stationsList);
+
+				updateTypeTextView.setText("Update Type: " + trainData.getUpdateType());
+				repetitionTextView.setText("Repetition: " + trainData.getRepitition());
+				if(trainData.getRepitition().equalsIgnoreCase(getResources().getString(R.string.does_not_repeat))) {
+					int flags = DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR
+							| DateUtils.FORMAT_SHOW_WEEKDAY | DateUtils.FORMAT_ABBREV_MONTH
+							| DateUtils.FORMAT_ABBREV_WEEKDAY;
+					String dateString = DateUtils.formatDateTime(SetupNotifyActivity.this, trainData.getDateInMilli(), flags);
+					repetitionTextView.setText("Repetition: " + trainData.getRepitition() + " - " + dateString);
+				}
+				//SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
+
+				//String starttime = dateFormat.format(new Date(trainData.getStartTsecs()));
+				//String endtime = dateFormat.format(new Date(trainData.getEndTsecs()));
+				String starttime = milliToStringConverter(trainData.getStartTsecs());
+				String endtime = milliToStringConverter(trainData.getEndTsecs());
+				timeIntervalTextView.setText("Time Interval: " + starttime + " - " + endtime);
+				if(trainData.getFrequency() != null) {
+					frequencyTextView.setText("Frequency: " + trainData.getFrequency());
+				}
 			}
-			//SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
-			
-			//String starttime = dateFormat.format(new Date(trainData.getStartTsecs()));
-			//String endtime = dateFormat.format(new Date(trainData.getEndTsecs()));
-			String starttime = milliToStringConverter(trainData.getStartTsecs());
-			String endtime = milliToStringConverter(trainData.getEndTsecs());
-			timeIntervalTextView.setText("Time Interval: " + starttime + " - " + endtime);
-			if(trainData.getFrequency() != null) {
-				frequencyTextView.setText("Frequency: " + trainData.getFrequency());
-			}
-			
 			return view;
 			
 		}
