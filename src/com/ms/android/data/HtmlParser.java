@@ -95,7 +95,7 @@ public class HtmlParser
 		}
 		html = html.replaceAll("&nbsp;", "");
 		Document locationDocument = Jsoup.parse(html);
-		Element runningTableElements = locationDocument.getElementById("tableRun");
+		Element runningTableElements = locationDocument.getElementById("NtesTable");
 		Elements tableRowElements = runningTableElements.select("td");
 		Elements fontElements = locationDocument.select("font");
 		if((tableRowElements != null) && (fontElements != null))

@@ -126,13 +126,24 @@ public class TrainStationUpdateService extends IntentService
 											Constants.TODAY_START_DATE, boardingStationName);
 				System.out.println(lastStationInfo.getStationName());
 				Calendar departure = Calendar.getInstance();
-				departure.setTime(format.parse(lastStationInfo.getActualDeparture() + "-" + calendar.get(Calendar.YEAR)));
-				if(calendar.getTimeInMillis() >= departure.getTimeInMillis()) {
-					//TODO: generate notification and cancel all future alarms
-					//System.out.println(LEFT_BOARDING_STATION + boardingStationName);
-					hasTheTrainDepartedBoradingStation = true;
-					//cancelAlarm();
+				if(!lastStationInfo.getActualDeparture().contains("Waiting for update")) {
+					departure.setTime(format.parse(lastStationInfo.getActualDeparture() + "-" + calendar.get(Calendar.YEAR)));
+					if(calendar.getTimeInMillis() >= departure.getTimeInMillis()) {
+						//TODO: generate notification and cancel all future alarms
+						//System.out.println(LEFT_BOARDING_STATION + boardingStationName);
+						hasTheTrainDepartedBoradingStation = true;
+						//cancelAlarm();
+					}
 				}
+				else {
+					if(statusBarNotification == 1) {
+						String title = trainnumber + " - " + trainname;
+						String message = lastStationInfo.getLastLocation() + ". " + "ETA at " + boardingStationName + " is "+ 
+											lastStationInfo.getActualArrival() + ". " + lastStationInfo.getLastUpdatedTime();
+						StatusBarNotification.generateNotification(this, title, message);
+					}
+				}
+				
 				
 				if(!hasTheTrainDepartedBoradingStation) {
 					for(String stationName : notificationStations) {
@@ -147,9 +158,8 @@ public class TrainStationUpdateService extends IntentService
 									String message = info.getLastLocation() + ". " + "ETA at " + boardingStationName + " is "+ info.getActualArrival() + ". " +
 											info.getLastUpdatedTime();
 									StatusBarNotification.generateNotification(this.getBaseContext(), title, message);
-									SharedPreferences.Editor anotherEditor = sharedPreference.edit();
-									anotherEditor.putBoolean(trainnumber + "-" + stationName, Boolean.valueOf(false));
-									anotherEditor.commit();
+									editor.putBoolean(trainnumber + "-" + stationName, Boolean.valueOf(false));
+									editor.commit();
 								}
 							}
 							else {
@@ -162,9 +172,8 @@ public class TrainStationUpdateService extends IntentService
 										String message = info.getLastLocation() + ". " + "ETA at " + boardingStationName + " is "+ info.getActualArrival() + ". " +
 												info.getLastUpdatedTime();
 										StatusBarNotification.generateNotification(this.getBaseContext(), title, message);
-										SharedPreferences.Editor anotherEditor = sharedPreference.edit();
-										anotherEditor.putBoolean(trainnumber + "-" + stationName, Boolean.valueOf(true));
-										anotherEditor.commit();
+										editor.putBoolean(trainnumber + "-" + stationName, Boolean.valueOf(true));
+										editor.commit();
 										//stationNotificationGenerated.put(trainnumber + "-" + stationName, Boolean.valueOf(true));
 									}
 								}
@@ -187,14 +196,20 @@ public class TrainStationUpdateService extends IntentService
 				long triggerAtMillis = System.currentTimeMillis() + (intervalInMillis - (endTsecsMillis - beginTsecsMillis));
 				setAlarm(triggerAtMillis);
 			}
+			else {
+				for(String station : notificationStations) {
+					editor.remove(trainnumber + "-" + station);
+					//stationNotificationGenerated.remove(trainnumber + "-" + station);
+				}
+				editor.commit();
+			}
 		}
 		else {
-			SharedPreferences.Editor oneMoreEditor = sharedPreference.edit();
 			for(String station : notificationStations) {
-				oneMoreEditor.remove(trainnumber + "-" + station);
+				editor.remove(trainnumber + "-" + station);
 				//stationNotificationGenerated.remove(trainnumber + "-" + station);
 			}
-			oneMoreEditor.commit();
+			editor.commit();
 			//cancelAlarm();
 		}
 		

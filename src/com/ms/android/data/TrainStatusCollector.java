@@ -184,38 +184,6 @@ public class TrainStatusCollector
 		}
 		
 		return stationInfo;
-		/*
-		StationInfo stationInfo = null;
-		if(jsonData != null) {
-			
-			try {
-				
-				JSONObject locationDataInJSON = new JSONObject(jsonData);
-				String key = locationDataInJSON.getString("keys");
-				locationDataInJSON = new JSONObject(locationDataInJSON.getString(key.substring(2, (key.length() -2))));
-				stationInfo = new StationInfo();
-				stationInfo.setStatusCode(locationDataInJSON.getString("status_code"));
-				if(stationInfo.getStatusCode().equalsIgnoreCase("reached")) {
-					stationInfo.setRunningStatus(locationDataInJSON.getString("status"));
-				} else if(stationInfo.getStatusCode().equalsIgnoreCase("not_started")) {
-					String notYetStarted = locationDataInJSON.getString("status") + "Scheduled to start at " + locationDataInJSON.getString("scheduled_start");
-					stationInfo.setRunningStatus(notYetStarted);
-				} else {
-					JSONObject lastStationJSON  = (locationDataInJSON.getJSONObject("running_info")).getJSONObject("last_stn");
-					stationInfo.setDelayInMinutes(locationDataInJSON.getInt("delay_mins"));
-					stationInfo.setStationCode(lastStationJSON.getString("station_code"));
-					stationInfo.setStationName(lastStationJSON.getString("station_name"));
-					stationInfo.setStatus(lastStationJSON.getString("status"));
-					stationInfo.setDepartedTime(lastStationJSON.getString("time"));				
-				}
-			} catch (Exception ex) {
-				Log.e(TrainStatusCollector.class.toString(), ex.getMessage());
-			}
-
-		}
-		
-		return stationInfo;
-		*/
 	}
 
 	/**
