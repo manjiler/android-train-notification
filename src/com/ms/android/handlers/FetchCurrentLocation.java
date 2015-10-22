@@ -1,15 +1,13 @@
 package com.ms.android.handlers;
 
-import com.ms.android.data.StationInfo;
-import com.ms.android.data.TrainStatusCollector;
-import com.ms.android.data.TrainStatusUtility;
-import com.ms.android.exceptions.CaptchaNotValidException;
-
 import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.ms.android.data.StationInfo;
+import com.ms.android.data.TrainStatusCollector;
+import com.ms.android.exceptions.CaptchaNotValidException;
 
 public class FetchCurrentLocation extends AsyncTask<String, Integer, String> {
 
@@ -28,8 +26,8 @@ public class FetchCurrentLocation extends AsyncTask<String, Integer, String> {
 	{
 		TrainStatusCollector infoCollector = new TrainStatusCollector(m_Context);
 		publishProgress(10);
-		String currentLocation = "";
-		StationInfo lastStationInfo = null;
+		String currentLocation;
+		StationInfo lastStationInfo;
 		try
 		{
 			lastStationInfo = infoCollector.getLastStationLocation(params[0], params[1], params[2]);
@@ -41,7 +39,7 @@ public class FetchCurrentLocation extends AsyncTask<String, Integer, String> {
 			}
 			else
 			{
-				currentLocation = "Unable to retreive data for time being. Please retry after sometime!!!";
+				currentLocation = "Unable to retrieve data for time being. Please retry after sometime!!!";
 			}
 		}
 		catch(CaptchaNotValidException ex)
@@ -61,7 +59,7 @@ public class FetchCurrentLocation extends AsyncTask<String, Integer, String> {
 	{
 		m_ProgressBar.setVisibility(ProgressBar.INVISIBLE);
 		m_CurrentLocationTextView.setVisibility(TextView.VISIBLE);
-		m_CurrentLocationTextView.setText(currentLocation);		
+		m_CurrentLocationTextView.setText(currentLocation);
 	}
 	
 }

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/deleteNotification" android:title="@string/setup_contextual_delete"></item>
+    
+
+</menu>
+<!-- From: file:/C:/Users/srivatsm/Documents/Android/Projects/android-train-notification/res/menu/setup_context_munu.xml -->

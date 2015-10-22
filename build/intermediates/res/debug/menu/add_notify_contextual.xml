@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/save" android:title="DONE"></item>
+    <item android:id="@+id/cancel" android:title="CANCEL"></item>
+
+</menu><!-- From: file:/C:/Users/srivatsm/Documents/Android/Projects/android-train-notification/res/menu/add_notify_contextual.xml -->

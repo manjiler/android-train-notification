@@ -74,4 +74,6 @@
     <string name="captcha_verify_button">Verify Captcha</string>
     <string name="captcha_valid_text">Congrats!!! captcha validated!!!</string>
     <string name="captcha_invalid_text">Moron!!! Enter the text properly... There is no refresh</string>
+
+    <string name="station_update_preference_file">tempname</string>
 </resources>

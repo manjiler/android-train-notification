@@ -1,0 +1,48 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"    
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/welcomeTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/welcome_text"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_weight="0.2" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:layout_weight="0.2" />
+
+    <Button
+        android:id="@+id/liveStatusButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/live_status_button" 
+        android:layout_weight="0.05" />
+    
+	<Button
+        android:id="@+id/setupNotificationButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/setup_notification_button" 
+        android:layout_weight="0.05" />
+    
+	<Button
+        android:id="@+id/stationCodeNameButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/station_code_to_name_vice_versa_button" 
+        android:layout_weight="0.05" />
+	
+	<Space
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:layout_weight="0.2" />
+
+</LinearLayout>
+
+<!-- From: file:/C:/Users/srivatsm/Documents/Android/Projects/android-train-notification/res/layout/activity_home_screen.xml -->

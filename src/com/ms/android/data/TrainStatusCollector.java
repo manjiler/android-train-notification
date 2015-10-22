@@ -58,7 +58,7 @@ public class TrainStatusCollector
 	//public static String LOCATION_SERVER = "http://coa-433841822.ap-southeast-1.elb.amazonaws.com/train/location.json?callback=jQuery164011875250330194831";
 	public static String LOCATION_SERVER = TRAIN_ENQUIRY_SERVER + "/ajax/location.json?";
 	
-	public static final String CURRENT_LOCATION_TRAIN_URL = "http://enquiry.indianrail.gov.in/mntes/MntesServlet?action=TrainRunning&subAction=ShowRun";
+	public static final String CURRENT_LOCATION_TRAIN_URL = "http://enquiry.indianrail.gov.in/mntes/MntesServlet?action=TrainRunning&subAction=ShowRunC";
 	public static final String SEARCH_TRAIN_URL = "http://enquiry.indianrail.gov.in/mntes/MntesServlet?action=TrainRunning&subAction=TrainSchedule&event=show&trainNo=";
 
 	public static final String JSON = ".json";
@@ -174,7 +174,7 @@ public class TrainStatusCollector
 		formData.add(new BasicNameValuePair(Constants.JDATETD, jDateTD));
 		formData.add(new BasicNameValuePair(Constants.JDATETM, jDateTM));
 		formData.add(new BasicNameValuePair(Constants.JDATEYS, jDateYS));
-		formData.add(new BasicNameValuePair(Constants.JSTATION, jStation));
+		formData.add(new BasicNameValuePair(Constants.JSTATION, jStation + "#0"));
 		formData.add(new BasicNameValuePair(Constants.TRAINNO, trainNo));
 		
 		String htmlData = fetchData(lastStationUrl, formData, refererUrl);

@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:fillViewport="true"
+    android:isScrollContainer="true"
+    android:longClickable="true" >
+
+    <LinearLayout
+        android:id="@+id/linearLayoutOuter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <EditText
+                android:id="@+id/trainNumberEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="0.7"
+                android:ems="10"
+                android:hint="@string/enter_train_number"
+                android:inputType="number" />
+
+            <Button
+                android:id="@+id/fetchStationListButton"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="0.3"
+                android:text="@string/fetch_train_info" />
+        </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/stationListProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+
+        <TextView
+            android:id="@+id/trainNameAddNotify"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text=""
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+        
+        <RadioGroup 
+            android:id="@+id/updateTypeRadioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="3dp">
+
+            <RadioButton
+                android:id="@+id/stationUpdateRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.6"
+                android:text="@string/station_update_radio_button"
+                android:soundEffectsEnabled="true"
+                android:checked="true" />
+            
+            <RadioButton
+                android:id="@+id/locationUpdateRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.4"
+                android:text="@string/location_update_radio_button"
+                android:soundEffectsEnabled="true" />
+            
+        </RadioGroup>
+
+        <LinearLayout
+            android:id="@+id/linearLayout3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal" >
+
+            <Spinner
+                android:id="@+id/stationListSpinner3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.8"
+                android:spinnerMode="dropdown" />
+
+            <ImageView
+                android:id="@+id/removeStationSpinner3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2"
+                android:src="@android:drawable/ic_menu_close_clear_cancel" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/AddMoreStationButton"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="@string/add_more_station_button" />
+
+        <TextView
+            android:id="@+id/repetitionTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:text="@string/repetition_label"
+            android:textAllCaps="true"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <Spinner
+            android:id="@+id/repeatSpinner"
+            style="@style/TextAppearance.EditEvent_Spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:spinnerMode="dropdown" />
+        
+        <TextView
+            android:id="@+id/timeIntervalTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/time_interval"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_marginTop="10dp" />
+
+        <LinearLayout            
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal" >
+            
+	        <TextView
+	            android:id="@+id/fromTimeTextView"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/from_time_label"
+	            android:textAppearance="?android:attr/textAppearanceMedium" />
+	            
+	        <Button
+	            android:id="@+id/startTimeButton"
+	            style="@style/TextAppearance.EditEvent_SpinnerButton"
+	            android:layout_width="0px"
+	            android:layout_height="wrap_content"
+	            android:layout_marginLeft="0dip"
+	            android:layout_weight="4" />
+            
+        </LinearLayout>
+        
+        <LinearLayout            
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal" >
+            
+	        <TextView
+	            android:id="@+id/toTimeTextView"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/to_time_label"
+	            android:textAppearance="?android:attr/textAppearanceMedium" />
+	            
+	        <Button
+	            android:id="@+id/endTimeButton"
+	            style="@style/TextAppearance.EditEvent_SpinnerButton"
+	            android:layout_width="0px"
+	            android:layout_height="wrap_content"
+	            android:layout_marginLeft="0dip"
+	            android:layout_weight="4" />
+            
+        </LinearLayout>
+        
+        <LinearLayout
+            android:id="@+id/startDateLinearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal" >
+            
+	        <TextView
+	            android:id="@+id/startDateTextView"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/date"
+	            android:textAppearance="?android:attr/textAppearanceMedium" />
+	            
+	        <Button
+	            android:id="@+id/startDateButton"
+	            style="@style/TextAppearance.EditEvent_SpinnerButton"
+	            android:layout_width="0px"
+	            android:layout_height="wrap_content"
+	            android:layout_marginLeft="0dip"
+	            android:layout_weight="4" />
+            
+        </LinearLayout>
+        
+        <LinearLayout
+            android:id="@+id/freqLinearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/frequencyTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/frequency"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <Spinner
+                android:id="@+id/frequencySpinner"
+                style="@style/TextAppearance.EditEvent_Spinner"
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="0dip"
+                android:layout_weight="4"
+                android:spinnerMode="dropdown" />
+            
+        </LinearLayout>
+        
+        <Switch
+            android:id="@+id/statusBarNotifySwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginTop="50dp"
+            android:text="@string/status_bar_switch" />
+
+        <Switch
+            android:id="@+id/smsNotifySwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:text="@string/sms_notify_switch"
+            android:visibility="invisible" />
+
+        <Switch
+            android:id="@+id/emailNotifySwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginTop="10dp"
+            android:text="@string/email_notify_switch"
+            android:visibility="invisible" />
+    </LinearLayout>
+
+</ScrollView><!-- From: file:/C:/Users/srivatsm/Documents/Android/Projects/android-train-notification/res/layout/add_notify_screen.xml -->

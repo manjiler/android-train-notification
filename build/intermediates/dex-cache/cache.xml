@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="C:\Users\srivatsm\Documents\Android\Projects\android-train-notification\libs\jsoup-1.7.2.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="872693211fd68d1c4e116cf90021603207725e19">
+        <dex dex="C:\Users\srivatsm\Documents\Android\Projects\android-train-notification\build\intermediates\pre-dexed\debug\jsoup-1.7.2-81a395972755e86d76cca8d9940f37722b3fb171.jar" />
+    </item>
+    <item
+        jar="C:\Users\srivatsm\Documents\Android\Projects\android-train-notification\libs\android-support-v4.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="612846c9857077a039b533718f72db3bc041d389">
+        <dex dex="C:\Users\srivatsm\Documents\Android\Projects\android-train-notification\build\intermediates\pre-dexed\debug\android-support-v4-ca48ea1dc2a981fcee0027d516a44f22beccee5b.jar" />
+    </item>
+
+</items>

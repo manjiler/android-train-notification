@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:ns1="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- From: file:/C:/Users/srivatsm/Documents/Android/Projects/android-train-notification/res/values/arrays.xml -->
+    <eat-comment/>
+    <string-array name="ordinal_labels">
+        <item>first</item>
+        <item>second</item>
+        <item>third</item>
+        <item>fourth</item>
+        <item>last</item>
+    </string-array>
+    <!-- From: file:/C:/Users/srivatsm/Documents/Android/Projects/android-train-notification/res/values/strings.xml -->
+    <eat-comment/>
+    <string name="add_more_station_button">Add more station</string>
+    <string name="add_notify">Add</string>
+    <string name="add_notify_screen">Add Notifications</string>
+    <string name="app_name">Train Status</string>
+    <string name="captcha_image_description">Captcha fetch from Indian Rail Enquiry server</string>
+    <string name="captcha_input_hint">Enter the Captcha</string>
+    <string name="captcha_invalid_text">Moron!!! Enter the text properly... There is no refresh</string>
+    <string name="captcha_valid_text">Congrats!!! captcha validated!!!</string>
+    <string name="captcha_verify_button">Verify Captcha</string>
+    <string name="daily">Daily</string>
+    <string name="date">Date: </string>
+    <string name="date_text">Date : </string>
+    <string name="delete_notify">Delete</string>
+    <string name="does_not_repeat">One-time event</string>
+    <string name="edit_notify">Edit</string>
+    <string name="email_notify_switch">Enable Email Notification</string>
+    <string name="enter_train_number">Enter train number</string>
+    <string name="every_weekday">"Every weekday (Mon\u2013Fri)"</string>
+    <string name="fetch_location_button">Fetch location</string>
+    <string name="fetch_station_list_button">Fetch stations</string>
+    <string name="fetch_train_info">Go</string>
+    <string name="frequency">Frequency (minutes): </string>
+    <string name="from_time_label">FROM : </string>
+    <string name="hello_world">Hello world!</string>
+    <string name="live_status">Live Train Status!</string>
+    <string name="live_status_button">Live Train Status!</string>
+    <string name="location_update_radio_button">Location Updates</string>
+    <string name="menu_settings">Settings</string>
+    <string name="monthly_on_day">"Monthly (on day <ns1:g id="day_of_month">%s</ns1:g>)"</string>
+    <string name="monthly_on_day_count">"Monthly (every <ns1:g id="ordinal_number">%1$s</ns1:g> <ns1:g id="day_of_week">%2$s</ns1:g>)"</string>
+    <string name="remove_station_description">This buttons removes the stations</string>
+    <string name="repetition_label">REPETITION</string>
+    <string name="settings_screen">Settings</string>
+    <string name="setup_contextual_delete">Delete Notification</string>
+    <string name="setup_notification_button">Setup Notification</string>
+    <string name="setup_notify_screen">Setup Notifications</string>
+    <string name="sms_notify_switch">Enable SMS(s) Notification</string>
+    <string name="spinner_station_prompt">Choose a station</string>
+    <string name="station_code_text">Station Code : </string>
+    <string name="station_code_to_name_vice_versa_button">Trains between stations</string>
+    <string name="station_update_preference_file">tempname</string>
+    <string name="station_update_radio_button">Station Updates</string>
+    <string name="status_bar_switch">Enable Status Bar Notification</string>
+    <string name="time_interval">Time Interval (in which the status of train will be checked and notified)</string>
+    <string name="title_activity_home_screen">Train Status</string>
+    <string name="to_time_label">TO : </string>
+    <string name="train_number_text">Train Number : </string>
+    <string name="weekly">"Weekly (every <ns1:g id="days_of_week">%s</ns1:g>)"</string>
+    <string name="welcome_text">Welcome to "Train Notification" app</string>
+    <!-- From: file:/C:/Users/srivatsm/Documents/Android/Projects/android-train-notification/res/values/styles.xml -->
+    <eat-comment/>
+    <style name="AppTheme" parent="android:Theme.Light"/>
+    <style name="TextAppearance" parent="android:TextAppearance">
+    </style>
+    <style name="TextAppearance.EditEvent_Spinner" parent="android:style/Widget.Holo.Light.Spinner">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">#FF333333</item>
+        <item name="android:layout_marginRight">12dp</item>
+        <item name="android:layout_marginLeft">12dp</item>
+    </style>
+    <style name="TextAppearance.EditEvent_SpinnerButton" parent="TextAppearance.EditEvent_Spinner">
+        <item name="android:paddingLeft">12dp</item>
+        <item name="android:paddingRight">12dp</item>
+    </style>
+    <style name="dropDownSpinnerStyle" parent="@android:style/Theme.Holo.Light.DarkActionBar">
+        <item name="android:textColor">#ffffff</item>
+    </style>
+</resources>
