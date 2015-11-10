@@ -128,53 +128,59 @@ public class TrainStatusCollector
 		String lastStationUrl = CURRENT_LOCATION_TRAIN_URL;
 		String refererUrl = "http://enquiry.indianrail.gov.in/mntes/MntesServlet?action=TrainRunning&subAction=FindStationList";
 		StationInfo stationInfo = null;
-		String jDateType = "";
+		/*String jDateType = "";
 		String jDateTD = "";
 		String jDateYS = ""; 
-		String jDateTM = "";
+		String jDateTM = "";*/
+        String jDate = "";
+        String jDateDay = "";
+        long startTsecsMillis = 0;
 		String trainNo = trainNumber;
 		String jStation = stationName.substring((stationName.indexOf("(") + 1), stationName.lastIndexOf(")"));
+        String dateFormat = "dd-MMM-yyyy";
 		if(startDate.equalsIgnoreCase(Constants.TODAY_START_DATE))
 		{
-			long startTsecsMillis = System.currentTimeMillis();
-			Calendar calendar = Calendar.getInstance();
+			startTsecsMillis = System.currentTimeMillis();
+            /*Calendar calendar = Calendar.getInstance();
 			calendar.setTimeInMillis(startTsecsMillis);
 			jDateType = Constants.startDateMapping.get(Constants.TODAY_START_DATE);
 			jDateTD = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.US);
 			calendar.setTimeInMillis(startTsecsMillis - (86400 * 1000));
 			jDateYS = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.US);
 			calendar.setTimeInMillis(startTsecsMillis + (86400 * 1000));
-			jDateTM = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.US);
+			jDateTM = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.US);*/
 		}
 		else if(startDate.equalsIgnoreCase(Constants.YESTERDAY_START_DATE))
 		{
-			long startTsecsMillis = System.currentTimeMillis() - (86400 * 1000);
-			Calendar calendar = Calendar.getInstance();
+			startTsecsMillis = System.currentTimeMillis() - (86400 * 1000);
+			/*Calendar calendar = Calendar.getInstance();
 			jDateType = Constants.startDateMapping.get(Constants.YESTERDAY_START_DATE);
 			jDateTD = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.US);
 			calendar.setTimeInMillis(startTsecsMillis - (86400 * 1000));
 			jDateYS = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.US);
 			calendar.setTimeInMillis(startTsecsMillis + (86400 * 1000));
-			jDateTM = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.US);
+			jDateTM = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.US);*/
 		}
 		else if(startDate.equalsIgnoreCase(Constants.TOMORROW_START_DATE))
 		{
-			long startTsecsMillis = System.currentTimeMillis() + (86400 * 1000);
-			Calendar calendar = Calendar.getInstance();
+			startTsecsMillis = System.currentTimeMillis() + (86400 * 1000);
+			/*Calendar calendar = Calendar.getInstance();
 			jDateType = Constants.startDateMapping.get(Constants.TOMORROW_START_DATE);
 			jDateTD = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.US);
 			calendar.setTimeInMillis(startTsecsMillis - (86400 * 1000));
 			jDateYS = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.US);
 			calendar.setTimeInMillis(startTsecsMillis + (86400 * 1000));
-			jDateTM = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.US);
+			jDateTM = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.US);*/
 		}
-		
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
+        jDate = simpleDateFormat.format(new Date(startTsecsMillis));
+        Calendar calendar = Calendar.getInstance();
+        jDateDay = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.US);
+
 		ArrayList<NameValuePair> formData = new ArrayList<NameValuePair>();
-		formData.add(new BasicNameValuePair(Constants.JDATETYPE, jDateType));
-		formData.add(new BasicNameValuePair(Constants.JDATETD, jDateTD));
-		formData.add(new BasicNameValuePair(Constants.JDATETM, jDateTM));
-		formData.add(new BasicNameValuePair(Constants.JDATEYS, jDateYS));
-		formData.add(new BasicNameValuePair(Constants.JSTATION, jStation + "#0"));
+		formData.add(new BasicNameValuePair(Constants.JDATE, jDate));
+		formData.add(new BasicNameValuePair(Constants.JDATEDAY, jDateDay));
+		formData.add(new BasicNameValuePair(Constants.JSTATION, jStation + "#false"));
 		formData.add(new BasicNameValuePair(Constants.TRAINNO, trainNo));
 		
 		String htmlData = fetchData(lastStationUrl, formData, refererUrl);

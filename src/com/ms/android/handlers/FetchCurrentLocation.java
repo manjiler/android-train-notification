@@ -33,7 +33,7 @@ public class FetchCurrentLocation extends AsyncTask<String, Integer, String> {
 			lastStationInfo = infoCollector.getLastStationLocation(params[0], params[1], params[2]);
 			if(lastStationInfo != null) 
 			{
-				currentLocation = lastStationInfo.getLastLocation() + ". " + "ETA " + 
+				currentLocation = lastStationInfo.getLastLocation() + "ETA " +
 									lastStationInfo.getActualArrival() + ". " +
 									lastStationInfo.getLastUpdatedTime();				
 			}

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:ns1="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- From: file:/C:/Users/srivatsm/Documents/Android/Projects/android-train-notification/res/values/arrays.xml -->
+    <!-- From: file:/M:/Android/My_Projects/android-train-notification/res/values/arrays.xml -->
     <eat-comment/>
     <string-array name="ordinal_labels">
         <item>first</item>
@@ -9,7 +9,7 @@
         <item>fourth</item>
         <item>last</item>
     </string-array>
-    <!-- From: file:/C:/Users/srivatsm/Documents/Android/Projects/android-train-notification/res/values/strings.xml -->
+    <!-- From: file:/M:/Android/My_Projects/android-train-notification/res/values/strings.xml -->
     <eat-comment/>
     <string name="add_more_station_button">Add more station</string>
     <string name="add_notify">Add</string>
@@ -60,7 +60,7 @@
     <string name="train_number_text">Train Number : </string>
     <string name="weekly">"Weekly (every <ns1:g id="days_of_week">%s</ns1:g>)"</string>
     <string name="welcome_text">Welcome to "Train Notification" app</string>
-    <!-- From: file:/C:/Users/srivatsm/Documents/Android/Projects/android-train-notification/res/values/styles.xml -->
+    <!-- From: file:/M:/Android/My_Projects/android-train-notification/res/values/styles.xml -->
     <eat-comment/>
     <style name="AppTheme" parent="android:Theme.Light"/>
     <style name="TextAppearance" parent="android:TextAppearance">

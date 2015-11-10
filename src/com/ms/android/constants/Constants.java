@@ -19,6 +19,10 @@ public class Constants
 	public static final String JDATETM = "jDateTM";
 	public static final String TRAINNO = "trainNo";
 	public static final String JSTATION = "jStation";
+
+	// new form parameters as of 10th November 2015
+	public static final String JDATE = "jDate";
+	public static final String JDATEDAY = "jDateDay";
 	
 	public static HashMap<String, String> startDateMapping;
 	

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/C:/Users/srivatsm/Documents/Android/Projects/android-train-notification/res/values-v11/styles.xml -->
+    <!-- From: file:/M:/Android/My_Projects/android-train-notification/res/values-v11/styles.xml -->
     <eat-comment/>
     <style name="AppTheme" parent="android:Theme.Holo.Light"/>
 </resources>
